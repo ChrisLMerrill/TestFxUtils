@@ -1,13 +1,17 @@
 package net.christophermerrill.testfx;
 
+import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.stage.*;
+import org.hamcrest.*;
 import org.junit.*;
 import org.testfx.framework.junit.*;
+import org.testfx.service.query.*;
+import org.testfx.service.query.impl.*;
 import org.testfx.util.*;
 
 /**
@@ -26,11 +30,25 @@ public abstract class ComponentTest extends ApplicationTest
     public void start(Stage stage) throws Exception
         {
         Node component = createComponentNode();
-        BorderPane root = new BorderPane();
-        root.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5))));
-        root.setCenter(component);
+
+        Parent root;
+        if (fillToWidthAndHeight())
+	        {
+	        BorderPane bordered = new BorderPane();
+	        bordered.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5))));
+	        bordered.setCenter(component);
+	        root = bordered;
+	        }
+        else
+	        {
+	        GridPane grid = new GridPane();
+	        grid.add(component, 0, 0);
+	        root = grid;
+	        }
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
+//        scene.getStylesheets().add(getClass().getResource("/ide.css").toExternalForm());
         stage.setWidth(getDefaultWidth());
         stage.setHeight(getDefaultHeight());
         stage.show();
@@ -58,11 +76,18 @@ public abstract class ComponentTest extends ApplicationTest
         return 200;
         }
 
-    protected abstract Node createComponentNode();
+    protected boolean fillToWidthAndHeight() { return true; }
+
+    protected abstract Node createComponentNode() throws Exception;
 
     protected void fillFieldAndTabAway(String locator, String text)
         {
         clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).write(text).push(KeyCode.TAB);
+        }
+
+    protected void fillFieldAndPressEnter(String locator, String text)
+        {
+        clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).write(text).push(KeyCode.ENTER);
         }
 
     protected void fillField(String locator, String text)
@@ -75,9 +100,19 @@ public abstract class ComponentTest extends ApplicationTest
         clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.DELETE).push(KeyCode.TAB);
         }
 
+    protected void tabAway()
+        {
+        push(KeyCode.TAB);
+        }
+
     protected void pressUndoKey(String locator)
         {
         clickOn(locator).push(KeyCode.CONTROL, KeyCode.Z);
+        }
+
+    protected void pressEscape(String locator)
+	    {
+        clickOn(locator).push(KeyCode.ESCAPE);
         }
 
     protected void fillFieldAndTabAway(Node node, String text)
@@ -95,16 +130,23 @@ public abstract class ComponentTest extends ApplicationTest
         return ((Tooltip) node.getProperties().get(TOOLTIP_PROP_ID)).getText();
         }
 
-    protected String textOf(String query)
+    protected String textOf(Node node)
         {
-        Node node = lookup(query).query();
-        Assert.assertNotNull("node not found: " + query, node);
         if (node instanceof TextInputControl)
             return ((TextInputControl)node).getText();
         else if (node instanceof Labeled)
             return ((Labeled)node).getText();
-        Assert.fail("Expected a Label or TextInputControl");
+        else if (node instanceof ComboBox)
+            return ((ComboBox)node).getSelectionModel().getSelectedItem().toString();
+        Assert.fail("Expected a Label, TextInputControl or ComboBox");
         return null;
+        }
+
+    protected String textOf(String query)
+        {
+        Node node = lookup(query).query();
+        Assert.assertNotNull("node not found: " + query, node);
+        return textOf(node);
         }
 
     /**
@@ -126,8 +168,53 @@ public abstract class ComponentTest extends ApplicationTest
         return "#" + id_value;
         }
 
-    private final static String TOOLTIP_PROP_ID = "javafx.scene.control.Tooltip";  // copied from javafx.scene.control.Tooltip.TOOLTIP_PROP_KEY
+    protected String withStyle(String style_name)
+        {
+        return "." + style_name;
+        }
 
+    public TableCell tableCell(String table_query, int row, int column)
+        {
+        return lookup(table_query).lookup(".table-row-cell").nth(row).lookup(".table-cell").nth(column).query();
+        }
+
+    public <T extends Node> T nodeOfClass(Class<T> node_class, Node root)
+        {
+        return from(root).lookup(new BaseMatcher<T>()
+            {
+            @Override
+            public boolean matches(Object item)
+                {
+                return node_class.isAssignableFrom(item.getClass());
+                }
+
+            @Override
+            public void describeTo(Description description)
+                {
+
+                }
+            }).query();
+        }
+
+    protected String byClass(String class_name)
+        {
+        return "." + class_name;
+        }
+
+    protected PointQuery inside(Node query_node, final long x, final long y)
+	    {
+	    return new PointQueryBase()
+		    {
+		    @Override
+		    public Point2D query()
+			    {
+			    final Bounds bounds = bounds(query_node).query();
+			    return new Point2D(bounds.getMinX() + x, bounds.getMinY() + y);
+			    }
+		    };
+	    }
+
+    private final static String TOOLTIP_PROP_ID = "javafx.scene.control.Tooltip";  // copied from javafx.scene.control.Tooltip.TOOLTIP_PROP_KEY
     }
 
 
