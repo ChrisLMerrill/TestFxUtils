@@ -9,6 +9,7 @@ import javafx.scene.paint.*;
 import javafx.stage.*;
 import org.hamcrest.*;
 import org.junit.*;
+import org.testfx.api.*;
 import org.testfx.framework.junit.*;
 import org.testfx.service.query.*;
 import org.testfx.service.query.impl.*;
@@ -82,22 +83,40 @@ public abstract class ComponentTest extends ApplicationTest
 
     protected void fillFieldAndTabAway(String locator, String text)
         {
-        clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).write(text).push(KeyCode.TAB);
+        FxRobotInterface robot = clickOn(locator);
+        selectAll(robot).write(text).push(KeyCode.TAB);
         }
 
     protected void fillFieldAndPressEnter(String locator, String text)
         {
-        clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).write(text).push(KeyCode.ENTER);
+        FxRobotInterface robot = clickOn(locator);
+        selectAll(robot).write(text).push(KeyCode.ENTER);
         }
 
     protected void fillField(String locator, String text)
         {
-        clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).write(text);
+        FxRobotInterface robot = clickOn(locator);
+        selectAll(robot).write(text);
+        }
+
+    protected void fillFieldAndTabAway(Node node, String text)
+        {
+        FxRobotInterface robot = clickOn(node);
+        selectAll(robot).write(text).push(KeyCode.TAB);
+        }
+
+    protected FxRobotInterface selectAll(FxRobotInterface node)
+        {
+        if (OperatingSystem.macOS.equals(OperatingSystem.get()))
+            return push(KeyCode.COMMAND, KeyCode.A);
+        else
+            return push(KeyCode.CONTROL, KeyCode.A);
         }
 
     protected void clearFieldAndTabAway(String locator)
         {
-        clickOn(locator).push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.DELETE).push(KeyCode.TAB);
+        FxRobotInterface robot = clickOn(locator);
+        selectAll(robot).push(KeyCode.DELETE).push(KeyCode.TAB);
         }
 
     protected void tabAway()
@@ -107,17 +126,15 @@ public abstract class ComponentTest extends ApplicationTest
 
     protected void pressUndoKey(String locator)
         {
-        clickOn(locator).push(KeyCode.CONTROL, KeyCode.Z);
+        if (OperatingSystem.macOS.equals(OperatingSystem.get()))
+            clickOn(locator).push(KeyCode.COMMAND, KeyCode.Z);
+        else
+            clickOn(locator).push(KeyCode.CONTROL, KeyCode.Z);
         }
 
     protected void pressEscape(String locator)
 	    {
         clickOn(locator).push(KeyCode.ESCAPE);
-        }
-
-    protected void fillFieldAndTabAway(Node node, String text)
-        {
-        clickOn(node).push(KeyCode.CONTROL, KeyCode.A).write(text).push(KeyCode.TAB);
         }
 
     protected String quoted(Object value)
