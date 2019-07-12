@@ -84,39 +84,41 @@ public abstract class ComponentTest extends ApplicationTest
     protected void fillFieldAndTabAway(String locator, String text)
         {
         FxRobotInterface robot = clickOn(locator);
-        selectAll(robot).write(text).push(KeyCode.TAB);
+        clearText(locator);
+        robot.write(text).push(KeyCode.TAB);
         }
 
     protected void fillFieldAndPressEnter(String locator, String text)
         {
         FxRobotInterface robot = clickOn(locator);
-        selectAll(robot).write(text).push(KeyCode.ENTER);
+        clearText(locator);
+        robot.write(text).push(KeyCode.ENTER);
         }
 
     protected void fillField(String locator, String text)
         {
         FxRobotInterface robot = clickOn(locator);
-        selectAll(robot).write(text);
+        clearText(locator);
+        robot.write(text);
         }
 
     protected void fillFieldAndTabAway(Node node, String text)
         {
         FxRobotInterface robot = clickOn(node);
-        selectAll(robot).write(text).push(KeyCode.TAB);
+        ((TextInputControl)node).setText("");
+        robot.write(text).push(KeyCode.TAB);
         }
 
-    protected FxRobotInterface selectAll(FxRobotInterface node)
+    protected void clearText(String locator)
         {
-        if (OperatingSystem.macOS.equals(OperatingSystem.get()))
-            return push(KeyCode.COMMAND, KeyCode.A);
-        else
-            return push(KeyCode.CONTROL, KeyCode.A);
+        lookup(locator).queryTextInputControl().setText("");
         }
-
+    
     protected void clearFieldAndTabAway(String locator)
         {
         FxRobotInterface robot = clickOn(locator);
-        selectAll(robot).push(KeyCode.DELETE).push(KeyCode.TAB);
+        clearText(locator);
+        robot.push(KeyCode.TAB);
         }
 
     protected void tabAway()
