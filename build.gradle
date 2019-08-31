@@ -19,6 +19,7 @@ dependencies
     compile 'junit:junit:4.12'
     compile 'org.testfx:testfx-core:4.0.13-alpha'
     compile 'org.testfx:testfx-junit:4.0.13-alpha'
+    compile 'org.openjfx:javafx-base:11.0.2'
 
 //    testCompile 'org.jfxtras:openjfx-monocle:1.8.0_20'
     }
