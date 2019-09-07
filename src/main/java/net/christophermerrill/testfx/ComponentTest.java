@@ -173,8 +173,15 @@ public abstract class ComponentTest extends ApplicationTest
      */
     protected boolean exists(String query)
         {
-        Node node = lookup(query).query();
-        return node != null;
+        try
+            {
+            lookup(query).query();
+            return true;
+            }
+        catch (EmptyNodeQueryException e)
+            {
+            return false;
+            }
         }
 
     protected int numberOf(String query)
