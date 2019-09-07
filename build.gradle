@@ -22,8 +22,8 @@ javafx {
 dependencies
     {
     compile 'junit:junit:4.12'
-    compile 'org.testfx:testfx-core:4.0.13-alpha'
-    compile 'org.testfx:testfx-junit:4.0.13-alpha'
+    compile 'org.testfx:testfx-core:4.0.16-alpha'
+    compile 'org.testfx:testfx-junit:4.0.16-alpha'
     compile 'org.openjfx:javafx-controls:12.0.2'
     }
 
