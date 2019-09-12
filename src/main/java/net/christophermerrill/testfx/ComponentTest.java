@@ -1,5 +1,6 @@
 package net.christophermerrill.testfx;
 
+import javafx.collections.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -107,6 +108,12 @@ public abstract class ComponentTest extends ApplicationTest
         FxRobotInterface robot = clickOn(node);
         ((TextInputControl)node).setText("");
         robot.write(text).push(KeyCode.TAB);
+        }
+
+    protected void fillComboAndTabAway(String locator, String text)
+        {
+        ComboBox combo = lookup(locator).queryComboBox();
+        clickOn(combo).push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.DELETE).write(text).push(KeyCode.TAB);
         }
 
     protected void clearText(String locator)
