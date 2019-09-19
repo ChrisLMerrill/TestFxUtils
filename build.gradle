@@ -1,10 +1,9 @@
 plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+    id "java"
+    id "maven-publish"
+    id "com.jfrog.bintray" version "1.8.4"
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
-
-apply plugin: 'java'
-apply plugin: 'maven-publish'
 
 version 1.5
 group = 'net.christophermerrill'
@@ -23,12 +22,12 @@ dependencies
     {
     compile 'junit:junit:4.12'
     compile 'org.testfx:testfx-core:4.0.16-alpha'
-    compile 'org.testfx:testfx-junit:4.0.16-alpha'
+    compile 'org.testfx:testfx-junit:4.0.15-alpha'
     compile 'org.openjfx:javafx-controls:12.0.2'
     }
 
 javadoc {
-    include 'com/company/project/pkg/*'
+    include 'net/christophermerrill/testfx/*'
     options.addBooleanOption('html5', true)
 }
 
@@ -66,7 +65,7 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
             pom {
-                name = 'testfxutils' // pom.project.name must be same as bintray.pkg.name
+                name = 'TestFxUtils' // pom.project.name must be same as bintray.pkg.name
                 description = 'Tools for using TestFx to test JavaFX applications'
                 url = 'https://github.com/ChrisLMerrill/TestFxUtils'
                 packaging = 'jar'
@@ -96,14 +95,12 @@ publishing {
             }
         }
     }
-    repositories {
-        mavenLocal()
-    }
 }
 
 bintray {
     user = BINTRAY_UPLOAD_USERNAME
     key = BINTRAY_UPLOAD_APIKEY
+    publications = ['mavenJava']
     pkg {
         repo = 'maven'
         name = 'TestFxUtils'
@@ -123,7 +120,6 @@ bintray {
                 close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
             }
         }
-    configurations = ['archives']
     }
 
 }
