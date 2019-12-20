@@ -41,6 +41,11 @@ task javadocJar(type: Jar) {
     from javadoc
     }
 
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 artifacts {
     archives sourcesJar
     archives javadocJar
@@ -55,7 +60,7 @@ if (JavaVersion.current().isJava8Compatible()) {
   }
 
 wrapper {
-    gradleVersion = '5.6.2'
+    gradleVersion = '6.0.1'
 }
 
 publishing {
