@@ -1,6 +1,5 @@
 package net.christophermerrill.testfx;
 
-import javafx.collections.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -9,9 +8,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.stage.*;
 import org.hamcrest.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 import org.testfx.api.*;
-import org.testfx.framework.junit.*;
+import org.testfx.framework.junit5.*;
 import org.testfx.service.query.*;
 import org.testfx.service.query.impl.*;
 import org.testfx.util.*;
@@ -22,7 +21,6 @@ import org.testfx.util.*;
 @SuppressWarnings("unused,WeakerAccess") // public APIs
 public abstract class ComponentTest extends ApplicationTest
     {
-    @Before
     public void waitForUiEvents()
         {
         WaitForAsyncUtils.waitForFxEvents();
@@ -164,14 +162,14 @@ public abstract class ComponentTest extends ApplicationTest
             return ((Labeled)node).getText();
         else if (node instanceof ComboBox)
             return ((ComboBox)node).getSelectionModel().getSelectedItem().toString();
-        Assert.fail("Expected a Label, TextInputControl or ComboBox");
+        Assertions.fail("Expected a Label, TextInputControl or ComboBox");
         return null;
         }
 
     protected String textOf(String query)
         {
         Node node = lookup(query).query();
-        Assert.assertNotNull("node not found: " + query, node);
+        Assertions.assertNotNull(node, "node not found: " + query);
         return textOf(node);
         }
 

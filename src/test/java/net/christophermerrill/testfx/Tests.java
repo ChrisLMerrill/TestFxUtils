@@ -1,17 +1,15 @@
 package net.christophermerrill.testfx;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class Tests
+class Tests
     {
     @Test
-    public void OneNoopTest()
+    void OneNoopTest()
         {
-        Assert.assertTrue(true);  // no tests exist, yet.
+        Assertions.assertTrue(true);  // no tests exist, yet.
         }
     }
-
-
