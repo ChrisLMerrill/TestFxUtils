@@ -66,72 +66,72 @@ public abstract class ComponentTest extends ApplicationTest
         super.init();
         }
 
-    protected double getDefaultWidth()
+    public double getDefaultWidth()
         {
         return 600;
         }
 
-    protected double getDefaultHeight()
+    public double getDefaultHeight()
         {
         return 200;
         }
 
-    protected boolean fillToWidthAndHeight() { return true; }
+    public boolean fillToWidthAndHeight() { return true; }
 
-    protected abstract Node createComponentNode() throws Exception;
+    public abstract Node createComponentNode() throws Exception;
 
-    protected void fillFieldAndTabAway(String locator, String text)
+    public void fillFieldAndTabAway(String locator, String text)
         {
         FxRobotInterface robot = clickOn(locator);
         clearText(locator);
         robot.write(text).push(KeyCode.TAB);
         }
 
-    protected void fillFieldAndPressEnter(String locator, String text)
+    public void fillFieldAndPressEnter(String locator, String text)
         {
         FxRobotInterface robot = clickOn(locator);
         clearText(locator);
         robot.write(text).push(KeyCode.ENTER);
         }
 
-    protected void fillField(String locator, String text)
+    public void fillField(String locator, String text)
         {
         FxRobotInterface robot = clickOn(locator);
         clearText(locator);
         robot.write(text);
         }
 
-    protected void fillFieldAndTabAway(Node node, String text)
+    public void fillFieldAndTabAway(Node node, String text)
         {
         FxRobotInterface robot = clickOn(node);
         ((TextInputControl)node).setText("");
         robot.write(text).push(KeyCode.TAB);
         }
 
-    protected void fillComboAndTabAway(String locator, String text)
+    public void fillComboAndTabAway(String locator, String text)
         {
         ComboBox combo = lookup(locator).queryComboBox();
         clickOn(combo).push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.DELETE).write(text).push(KeyCode.TAB);
         }
 
-    protected void clearText(String locator)
+    public void clearText(String locator)
         {
         lookup(locator).queryTextInputControl().setText("");
         }
     
-    protected void clearFieldAndTabAway(String locator)
+    public void clearFieldAndTabAway(String locator)
         {
         FxRobotInterface robot = clickOn(locator);
         clearText(locator);
         robot.push(KeyCode.TAB);
         }
 
-    protected void tabAway()
+    public void tabAway()
         {
         push(KeyCode.TAB);
         }
 
-    protected void pressUndoKey(String locator)
+    public void pressUndoKey(String locator)
         {
         if (OperatingSystem.macOS.equals(OperatingSystem.get()))
             clickOn(locator).push(KeyCode.COMMAND, KeyCode.Z);
@@ -139,22 +139,22 @@ public abstract class ComponentTest extends ApplicationTest
             clickOn(locator).push(KeyCode.CONTROL, KeyCode.Z);
         }
 
-    protected void pressEscape(String locator)
+    public void pressEscape(String locator)
 	    {
         clickOn(locator).push(KeyCode.ESCAPE);
         }
 
-    protected String quoted(Object value)
+    public String quoted(Object value)
         {
         return "\"" + value.toString() + "\"";
         }
 
-    protected String getTooltipText(Node node)
+    public String getTooltipText(Node node)
         {
         return ((Tooltip) node.getProperties().get(TOOLTIP_PROP_ID)).getText();
         }
 
-    protected String textOf(Node node)
+    public String textOf(Node node)
         {
         if (node instanceof TextInputControl)
             return ((TextInputControl)node).getText();
@@ -166,17 +166,45 @@ public abstract class ComponentTest extends ApplicationTest
         return null;
         }
 
-    protected String textOf(String query)
+    public String textOf(String query)
         {
         Node node = lookup(query).query();
         Assertions.assertNotNull(node, "node not found: " + query);
         return textOf(node);
         }
 
+    public boolean isChecked(String query)
+        {
+        Node node = lookup(query).query();
+        Assertions.assertNotNull(node, "node not found: " + query);
+        return isChecked(node);
+        }
+
+    public boolean isChecked(Node node)
+        {
+        if (node instanceof CheckBox)
+            return ((CheckBox)node).isSelected();
+        Assertions.fail("Expected a CheckBox");
+        return false;
+        }
+
+    public boolean isDisabled(String query)
+        {
+        Node node = lookup(query).query();
+        Assertions.assertNotNull(node, "node not found: " + query);
+        return isDisabled(node);
+        }
+
+    public boolean isDisabled(Node node)
+        {
+        return node.isDisable();
+        }
+
+
     /**
      * Tests if a node (located by the query) exists in the scene graph.
      */
-    protected boolean exists(String query)
+    public boolean exists(String query)
         {
         try
             {
@@ -189,17 +217,17 @@ public abstract class ComponentTest extends ApplicationTest
             }
         }
 
-    protected int numberOf(String query)
+    public int numberOf(String query)
         {
         return lookup(query).queryAll().size();
         }
 
-    protected String id(String id_value)
+    public String id(String id_value)
         {
         return "#" + id_value;
         }
 
-    protected String withStyle(String style_name)
+    public String withStyle(String style_name)
         {
         return "." + style_name;
         }
@@ -227,12 +255,12 @@ public abstract class ComponentTest extends ApplicationTest
             }).query();
         }
 
-    protected String byClass(String class_name)
+    public String byClass(String class_name)
         {
         return "." + class_name;
         }
 
-    protected PointQuery inside(Node query_node, final long x, final long y)
+    public PointQuery inside(Node query_node, final long x, final long y)
 	    {
 	    return new PointQueryBase()
 		    {
